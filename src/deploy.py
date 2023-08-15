@@ -17,7 +17,7 @@ web3 = Web3(Web3.HTTPProvider(provider_rpc['alphanet']))  # Change to correct ne
 # 3. Create address variable
 account_from = {
     'private_key': os.getenv('PRIVATE_KEY'),
-    'address': '0x097447fc31B683306d41D7127FFDe7262D6a33f2',
+    'address': os.getenv('ADDRESS_FROM'),
 }
 def deploy_contract(_domain, _desc, _expiry):
     print(f'Attempting to deploy from account: { account_from["address"]}')

@@ -16,7 +16,7 @@ web3 = Web3(Web3.HTTPProvider(provider_rpc['alphanet']))  # Change to correct ne
 # 3. Create address variables
 account_from = {
     'private_key': os.getenv('PRIVATE_KEY'),
-    'address': '0x097447fc31B683306d41D7127FFDe7262D6a33f2',
+    'address': os.getenv('ADDRESS_FROM')
 }
 
 address_to = '0xB39d5e1B07d5E40c0DC0ab1C5a39068F5787C3F9'
