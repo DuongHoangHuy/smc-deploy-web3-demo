@@ -1,0 +1,23 @@
+celery -A workers.1_deploy_ens worker --loglevel=INFO --concurrency=4 -Q queue_app_1 -n worker1
+celery -A workers.2_setup_root worker --loglevel=INFO -Q queue_1_2 -n worker2
+celery -A workers.3_deploy_reverse_registrar worker --loglevel=INFO -Q queue_2_3 -n worker3
+celery -A workers.4_deploy_base worker --loglevel=INFO -Q queue_3_4
+celery -A workers.5_deploy_metadata worker --loglevel=INFO -Q queue_4_5
+celery -A workers.6_deploy_name_wrapper worker --loglevel=INFO -Q queue_5_6
+celery -A workers.7_deploy_price worker --loglevel=INFO -Q queue_6_7
+celery -A workers.8_deploy_controller worker --loglevel=INFO -Q queue_7_8
+celery -A workers.9_deploy_public worker --loglevel=INFO -Q queue_8_9
+celery -A workers.10_set_rule worker --loglevel=INFO -Q queue_9_10
+
+docker run --rm -it --hostname my-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3.9-management
+
+python3 -m workers.1_deploy_ens
+python3 -m workers.2_setup_root
+python3 -m workers.3_deploy_reverse_registrar
+python3 -m workers.4_deploy_base
+python3 -m workers.5_deploy_metadata
+python3 -m workers.6_deploy_name_wrapper
+python3 -m workers.7_deploy_price
+python3 -m workers.8_deploy_controller
+python3 -m workers.9_deploy_public
+python3 -m workers.10_set_rule
