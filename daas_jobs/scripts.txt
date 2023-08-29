@@ -9,6 +9,8 @@ celery -A workers.8_deploy_controller worker --loglevel=INFO -Q queue_7_8
 celery -A workers.9_deploy_public worker --loglevel=INFO -Q queue_8_9
 celery -A workers.10_set_rule worker --loglevel=INFO -Q queue_9_10
 
+celery -A app worker --loglevel=INFO --concurrency=4 -n worker
+
 docker run --rm -it --hostname my-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3.9-management
 
 python3 -m workers.1_deploy_ens

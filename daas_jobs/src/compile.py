@@ -1,8 +1,8 @@
 # 1. Import solcx
 import solcx
-
+# solcx.compile_solc('0.8.21')
 # 2. If you haven't already installed the Solidity compiler, uncomment the following line
-# solcx.install_solc()
+solcx.install_solc('0.4.5')
 
 # 3. Compile contract
 def compile_contract(path_deploy, deploy_contract_name):

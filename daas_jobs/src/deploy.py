@@ -15,7 +15,7 @@ provider_rpc = {
     'sepolia': 'https://little-young-diamond.ethereum-sepolia.discover.quiknode.pro/cdfa4b559074f4ce4e0287d05bd6dc6cf87a16c6/'
     }
 
-network = 'alphanet'
+network = os.getenv('RPC_NETWORK')
 web3 = Web3(Web3.HTTPProvider(provider_rpc[network]))  # Change to correct network
 
 # 3. Create address variable

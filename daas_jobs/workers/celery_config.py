@@ -1,5 +1,9 @@
 from celery import Celery
 import os
+from celery.signals import after_setup_logger
+import logging
+import sys
+
 app_celery = Celery('workers', 
                     backend='rpc://',
                     broker= os.getenv('RABBIT_URL'))
@@ -16,3 +20,7 @@ app_celery.conf.task_routes = ([
     ('workers.9_deploy_public.*', {'queue': 'queue_8_9'}),
     ('workers.10_set_rule.*', {'queue': 'queue_9_10'})
 ],)
+
+@after_setup_logger.connect
+def setup_loggers(logger, *args, **kwargs):
+    logger.addHandler(logging.StreamHandler(sys.stdout))

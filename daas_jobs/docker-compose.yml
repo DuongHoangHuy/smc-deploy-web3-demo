@@ -1,31 +1,109 @@
 version: "3.7"
 services:
-  # flask_app:
-  #   build: './flask_app'
-  #   ports:
-  #     - "8000:8000"
-  #   depends_on:
-  #     - rabbit
 
   rabbit:
     hostname: rabbit
-    container_name: rabbit_queue
     image: "rabbitmq:3.9-management"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-    # ports:
-    #   - "15672:15672"
-    #   - "5672:5672"
-    expose:
-      - 15672
-      - 5672
+      - BROKER_URL=
+    # expose:
+    #   - 15672
+    #   - 5672
 
-  daas_worker:
-    build: 
-      context: "."
-      dockerfile: dockerfile
+  flask_app:
+    image: "flask_app"
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rabbit
+
+  daas_worker_1:
+    image: daas_worker
     env_file:
       - .env
     depends_on:
       - rabbit
+    command: celery -A workers.1_deploy_ens worker --loglevel=INFO --concurrency=4 -Q queue_app_1 -n worker1
+
+  daas_worker_2:
+    image: daas_worker
+    env_file:
+      - .env
+    depends_on:
+      - rabbit
+    command: celery -A workers.2_setup_root worker --loglevel=INFO -Q queue_1_2 -n worker2
+
+  daas_worker_3:
+    image: daas_worker
+    env_file:
+      - .env
+    depends_on:
+      - rabbit
+    command: celery -A workers.3_deploy_reverse_registrar worker --loglevel=INFO -Q queue_2_3 -n worker3
+
+  daas_worker_4:
+    image: daas_worker
+    env_file:
+      - .env
+    depends_on:
+      - rabbit
+    command: celery -A workers.4_deploy_base worker --loglevel=INFO -Q queue_3_4
+  
+  daas_worker_5:
+    image: daas_worker
+    env_file:
+      - .env
+    depends_on:
+      - rabbit
+    command: celery -A workers.5_deploy_metadata worker --loglevel=INFO -Q queue_4_5
+
+  daas_worker_6:
+    image: daas_worker
+    env_file:
+      - .env
+    depends_on:
+      - rabbit
+    command: celery -A workers.6_deploy_name_wrapper worker --loglevel=INFO -Q queue_5_6
+
+  daas_worker_7:
+    image: daas_worker
+    env_file:
+      - .env
+    depends_on:
+      - rabbit
+    command: celery -A workers.7_deploy_price worker --loglevel=INFO -Q queue_6_7
+
+
+  daas_worker_8:
+    image: daas_worker
+    env_file:
+      - .env
+    depends_on:
+      - rabbit
+    command: celery -A workers.8_deploy_controller worker --loglevel=INFO -Q queue_7_8
+
+
+  daas_worker_9:
+    image: daas_worker
+    env_file:
+      - .env
+    depends_on:
+      - rabbit
+    command: celery -A workers.9_deploy_public worker --loglevel=INFO -Q queue_8_9
+
+  daas_worker_10:
+    image: daas_worker
+    env_file:
+      - .env
+    depends_on:
+      - rabbit
+    command: celery -A workers.10_set_rule worker --loglevel=INFO -Q queue_9_10
+
+networks:
+  default:
+    name: daas_network
